@@ -15,8 +15,6 @@ jobs:
           black_args: "."
       
       - uses: isort/isort-action@master
-        with:
-            requirementsFiles: "requirements.txt requirements-test.txt"
       
       - uses: py-actions/flake8@v2
         with:
