@@ -14,8 +14,6 @@ jobs:
         with:
           black_args: "."
       
-      - uses: isort/isort-action@master
-      
       - uses: py-actions/flake8@v2
         with:
           ignore: "F401"
