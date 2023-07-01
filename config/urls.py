@@ -19,15 +19,16 @@ from django.http import HttpResponse
 from django.urls import path
 import json
 
+
 def data() -> str:
     return "Here's ma loc"
 
+
 def foo(arg):
-    return HttpResponse(
-        content_type="application/json",
-        content= json.dumps(data()))
+    return HttpResponse(content_type="application/json", content=json.dumps(data()))
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('foo/', foo),
+    path("admin/", admin.site.urls),
+    path("foo/", foo),
 ]
