@@ -1,0 +1,37 @@
+name: action
+on: [push, pull_request]
+jobs:
+  linter_name:
+    name: runner, formatter
+    runs-on: ubuntu-latest
+    env: 
+      CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
+      CI_COMMIT_AUTHOR: ${{ github.event.repository.name }} Continuous Integration  
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: rickstaa/action-black@v1
+        with:
+          black_args: "."
+
+      - uses: py-actions/flake8@v2
+        with:
+          ignore: "F401"
+          max-line-length: "160"
+      
+      - name: Check for modified files
+        id: git-check
+        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
+      - name: Display event name 
+        run: echo "github.event_name=${{ github.event_name }}"
+      - name: Commit build artifacts (dist, devdist, docs, coverage)
+        # Don't run again on already pushed auto commit. Don't run on pull request events.
+        if: env.is-auto-commit == false && github.event_name != 'pull_request'
+        run: |
+          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.email "username@users.noreply.github.com"
+          git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
+          git push
+
+
+
