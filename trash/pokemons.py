@@ -1,8 +1,7 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from django.conf import settings
-from django.contrib import admin
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -96,7 +95,6 @@ def get_pokemon_for_mobile(request, name: str):
         content=json.dumps(result),
     )
 
-
 @csrf_exempt
 def get_from_cache(request) -> dict:
     if request.method == "GET":
@@ -108,10 +106,8 @@ def get_from_cache(request) -> dict:
         content_type="application/json",
         content=json.dumps(pokemon_cache),
     )
-
-
+    
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path("api/pokemon/<str:name>/", get_pokemon),
     path("api/pokemon/mobile/<str:name>/", get_pokemon_for_mobile),
     path("api/pokemon/", get_from_cache),
