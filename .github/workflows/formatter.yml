@@ -1,5 +1,5 @@
 name: action
-on: [push, pull_request]
+on: [push, pull]
 jobs:
   linter_name:
     name: runner, formatter
