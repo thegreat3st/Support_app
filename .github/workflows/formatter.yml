@@ -5,7 +5,8 @@ jobs:
     name: runner, formatter
     runs-on: ubuntu-latest
     env: 
-      CI_COMMIT_MESSAGE: ✅Done 🚀
+#       CI_COMMIT_MESSAGE: ✅Done 🚀 git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}" 
+#       git config --global user.email "vadimfootball1304@gmail.com"
       CI_COMMIT_AUTHOR: ${{ github.event.repository.name }} Continuous Integration  
     steps:
       - uses: actions/checkout@v3
@@ -24,14 +25,13 @@ jobs:
         run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
       - name: Display event name 
         run: echo "github.event_name=${{ github.event_name }}"
-      - name: Commit build artifacts (dist, devdist, docs, coverage)
+      - name: Push
         # Don't run again on already pushed auto commit. Don't run on pull request events.
         if: env.is-auto-commit == false && github.event_name != 'pull_request'
         run: |
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-          git config --global user.email "vadimfootball1304@gmail.com"
-          git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
           git push
+
 
 
 
