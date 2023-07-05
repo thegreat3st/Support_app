@@ -5,7 +5,7 @@ jobs:
     name: runner, formatter
     runs-on: ubuntu-latest
     env: 
-      CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
+      CI_COMMIT_MESSAGE: ✅Done 🚀
       CI_COMMIT_AUTHOR: ${{ github.event.repository.name }} Continuous Integration  
     steps:
       - uses: actions/checkout@v3
