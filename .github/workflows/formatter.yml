@@ -18,7 +18,7 @@ jobs:
         with:
           ignore: "F401"
           max-line-length: "120"
-      
+
       - name: Check for modified files
         id: git-check
         run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
@@ -27,12 +27,20 @@ jobs:
       - name: Commit build artifacts (dist, devdist, docs, coverage)
         # Don't run again on already pushed auto commit. Don't run on pull request events.
         if: env.is-auto-commit == false && github.event_name != 'pull_request'
+      - name: Change something
         run: |
-          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-          git config --global user.email "username@users.noreply.github.com"
-          git commit -a -m 
-
-          git push
+          find . -type f -name "*.md" -print0 | xargs -0 sed -i "s/foo/bar/g"
+      - name: Commit and push changes
+        uses: devops-infra/action-commit-push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_prefix: "[AUTO-COMMIT] foo/bar replace"
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          body: "**Automated pull request**<br><br>Replaced foo/bar"
+          title: ${{ github.event.commits[0].message }}
 
 
 
