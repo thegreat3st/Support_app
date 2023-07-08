@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 django = "~=4.2"
+djangorestframework = "~=3.14"
+djangorestframework-simplejwt = "~=5.2"
+django-filter = "~=23.2" 
 
 [dev-packages]
 requests = "*"
