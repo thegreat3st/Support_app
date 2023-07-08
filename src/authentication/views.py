@@ -12,7 +12,6 @@ from src.users.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from src.users.serializers import UserPublicSerializer
-from src.users.models import User
 from src.users.serializers import UserCreateSerializer
 
 
@@ -44,14 +43,16 @@ class LogoutView(APIView):
             token.blacklist()
 
             return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
+        except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutAllView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        tokens = OutstandingToken.objects.filter(user_id=request.user.id)
+        tokens = OutstandingToken.objects.filter(
+            user_id=request.user.id
+            )
         for token in tokens:
             t, _ = BlacklistedToken.objects.get_or_create(token=token)
 
