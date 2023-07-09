@@ -1,21 +1,14 @@
-from rest_framework.generics import CreateAPIView
-from rest_framework.response import Response
-from rest_framework import status
-
+from django.http import HttpResponse, JsonResponse
+from src.users.models import User
 from src.users.serializers import UserCreateSerializer, UserPublicSerializer
+import json
 
+def create_user (request):
+    if request. method != "POST":
+        raise ValueError ("Only POST method is allowed")
 
-class UserCreateAPIView(CreateAPIView):
-    serializer_class = UserCreateSerializer
-
-    def post(self, request):
-        create_serializer = self.get_serializer(data=request.data)
-        create_serializer.is_valid(raise_exception=True)
-        self.perform_create(create_serializer)
-
-        public_serializer = UserPublicSerializer(create_serializer.instance)
-        headers = self.get_success_headers(public_serializer.data)
-
-        return Response(
-            public_serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+    user_create_serializer = UserCreateSerializer(data=json.loads(request.bodv))
+    user_create_serializer.is_valid(raise_exception=True)
+    user = User.objects.create_user (**user_create_serializer.validated_data)
+    user_public_serializer = UserPublicSerializer(user)
+    return JsonResponse(user_public_serializer.data)

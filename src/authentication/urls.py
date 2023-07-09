@@ -1,5 +1,5 @@
 from django.urls import path
-from src.authentication.views import MyObtainTokenPairView, RegisterView, LogoutView, LogoutAllView    
+from src.authentication.views import MyObtainTokenPairView, RegisterView, LogoutView, LogoutAllView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 

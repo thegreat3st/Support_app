@@ -15,16 +15,16 @@ from src.users.serializers import UserPublicSerializer
 from src.users.serializers import UserCreateSerializer
 
 
-class UserViewSet(ReadOnlyModelViewSet):
+class UserViewSet(ReadOnlyModelViewSet): 
 
     serializer_class = UserPublicSerializer
     queryset = User.objects.all()
-
+    
     @action(detail=False)
     def get_list(self, request):
         pass
     
-class MyObtainTokenPairView(TokenObtainPairView):
+class MyObtainTokenPairView(TokenObtainPairView): # LoginResponseSerializer
     permission_classes = (AllowAny,)
     serializer_class = MyTokenObtainPairSerializer
     
