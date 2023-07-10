@@ -50,9 +50,9 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Message',
+            name='Message',# noqa
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),# noqa
                 ('text', models.TextField()),
                 ('request', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='messages', to='users.request')),# noqa
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='messages', to=settings.AUTH_USER_MODEL)),# noqa
