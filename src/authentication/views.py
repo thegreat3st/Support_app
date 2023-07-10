@@ -14,7 +14,6 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from src.users.serializers import UserPublicSerializer
 from src.users.serializers import UserCreateSerializer
 
-
 # class UserViewSet(ReadOnlyModelViewSet): 
 
 #     serializer_class = UserPublicSerializer
@@ -23,6 +22,19 @@ from src.users.serializers import UserCreateSerializer
 #     @action(detail=False)
 #     def get_list(self, request):
 #         pass
+
+class UserViewSet(ReadOnlyModelViewSet): 
+
+    queryset = User.objects.all()
+    serializer_class = UserPublicSerializer
+    lookup_field = 'email'
+    
+    @action(detail=True)
+    def group_names(self, request, pk=None):
+
+        user = self.get_object()
+        groups = user.groups.all()
+        return Response([group.name for group in groups])
     
 class MyObtainTokenPairView(TokenObtainPairView): # LoginResponseSerializer
     permission_classes = (AllowAny,)
