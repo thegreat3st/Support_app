@@ -46,12 +46,12 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='user_requests', to=settings.AUTH_USER_MODEL)),# noqa
             ],
             options={
-                'db_table': 'requests',
+                'db_table': 'requests',# noqa
             },
         ),
-        migrations.CreateModel(
+        migrations.CreateModel( # noqa
             name='Message',# noqa
-            fields=[
+            fields=[# noqa
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),# noqa
                 ('text', models.TextField()),
                 ('request', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='messages', to='users.request')),# noqa
