@@ -18,7 +18,7 @@ jobs:
       - uses: py-actions/flake8@v2
         with:
           ignore: "F401"
-          max-line-length: "140"
+          max-line-length: "120"
       
       - name: Check for modified files
         id: git-check
