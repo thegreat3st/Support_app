@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
             name='User',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),# noqa
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
+                ('password', models.CharField(max_length=128, verbose_name='password')),# noqa
+                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),# noqa
                 ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),# noqa
                 ('email', models.EmailField(max_length=150, unique=True)),
                 ('first_name', models.CharField(max_length=100, null=True)),
