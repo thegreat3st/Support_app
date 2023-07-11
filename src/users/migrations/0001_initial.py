@@ -39,16 +39,16 @@ class Migration(migrations.Migration):
             name='Request',
             # flake8: noqa
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),# noqa
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=100)),
                 ('text', models.TextField()),
                 ('visibility', models.BooleanField()),
                 ('status', models.PositiveSmallIntegerField()),
-                ('manager', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='manager_requests', to=settings.AUTH_USER_MODEL)),# noqa
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='user_requests', to=settings.AUTH_USER_MODEL)),# noqa
+                ('manager', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='manager_requests', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, related_name='user_requests', to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'db_table': 'requests',# noqa
+                'db_table': 'requests',
             },
         ),
         migrations.CreateModel( 
