@@ -15,7 +15,7 @@ jobs:
         with:
           black_args: "."
       
-      - uses: py-actions/flake8@v2
+      - uses: py-actions/flake8@v2.6
         with:
           ignore: "F401"
           max-line-length: "120"
