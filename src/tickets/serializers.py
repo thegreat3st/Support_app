@@ -7,8 +7,9 @@ class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ["id","category", "title", "text", "visibility", "status", "user", "manager", "created"]
-        read_only_fields = ["visibility", "manager", "created"]
+        fields = ["id", "category", "title", "text", "visibility", 
+                  "status", "user", "manager", "created_at"]
+        read_only_fields = ["visibility", "manager", "created_at"]
 
 
 class TicketAssignSerializer(serializers.Serializer):
@@ -28,4 +29,5 @@ class TicketAssignSerializer(serializers.Serializer):
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
-        fields = ('name', 'slug')
+        fields = ("id", "name", "slug")
+          

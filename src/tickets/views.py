@@ -1,18 +1,16 @@
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
-from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
+from rest_framework.exceptions import NotFound, status
 from src.tickets.models import Ticket, Category
 from src.tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsUser
 from src.tickets.serializers import (CategorySerializer, TicketAssignSerializer,
                                  TicketSerializer)
-from src.users.user_constants import Role
 
 User = get_user_model()
 
-
+    
 class TicketAPIViewSet(ModelViewSet):
     
     queryset = Ticket.objects.all()
@@ -42,6 +40,7 @@ class TicketAPIViewSet(ModelViewSet):
     @action(detail=True, methods=["post"])
     def take(self, request, pk):
         ticket = self.get_object()
+        # if (ticket == 0):
 
         # *****************************************************
         # Custom services approach
@@ -56,9 +55,12 @@ class TicketAPIViewSet(ModelViewSet):
         # *****************************************************
         serializer = TicketAssignSerializer(data={"manager_id": request.user.id})
         serializer.is_valid()
-        ticket = serializer.assign(ticket)
-
-        return Response(TicketSerializer(ticket).data)
+        if (ticket.manager is None):
+            ticket = serializer.assign(ticket)
+            return Response(TicketSerializer(ticket).data)
+        else:
+            return Response(data={"Error 404, ticket is already taken"}, status=status.HTTP_404_NOT_FOUND)
+        
 
     @action(detail=True, methods=["post"])
     def reassign(self, request, pk):
@@ -72,3 +74,4 @@ class TicketAPIViewSet(ModelViewSet):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    
