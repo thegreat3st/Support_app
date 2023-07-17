@@ -18,7 +18,7 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(
         "tickets.Category", 
-        on_delete=models.RESTRICT, 
+        on_delete=models.CASCADE, 
         null=False, 
         default=None)
     user = models.ForeignKey(
