@@ -1,6 +1,5 @@
-from tickets.models import Ticket
-
 from django.contrib.auth import get_user_model
+from tickets.models import Ticket
 
 User = get_user_model()
 

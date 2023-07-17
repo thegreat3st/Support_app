@@ -1,5 +1,4 @@
 from rest_framework.permissions import BasePermission
-
 from src.tickets.models import Ticket
 from src.users.user_constants import Role
 

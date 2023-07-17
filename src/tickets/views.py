@@ -1,15 +1,14 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import NotFound, status
 from src.tickets.models import Ticket, Category
 from src.tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsUser
 from src.tickets.serializers import (CategorySerializer, TicketAssignSerializer,
-                                 TicketSerializer)
-from django.db.models import Q
+                                     TicketSerializer)
 from src.users.user_constants import Role
-from src.users.serializers import UserPublicSerializer
 
 User = get_user_model()
 
