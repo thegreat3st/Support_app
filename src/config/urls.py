@@ -7,7 +7,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenRefreshView
 
-
 router = CustomReadOnlyRouter()
 router.register(r'user', UserViewSet, basename='User')
 
@@ -18,6 +17,7 @@ urlpatterns = [
     # path('token/', MyObtainTokenPairView.as_view(), name='token_obtain_pair'),
     # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/', include('src.authentication.urls')),
+    path('tickets/', include('src.tickets.urls')),
     path('', include(router.urls)),
 ]
 
