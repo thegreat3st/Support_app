@@ -77,7 +77,10 @@ class TicketAPIViewSet(ModelViewSet):
         serializer.is_valid()
         if (request.user.is_superuser is True):
             ticket = serializer.assign(ticket)
-            return Response(TicketSerializer(ticket).data)
+            if ticket.manager_id is not None:
+                return Response(TicketSerializer(ticket).data)
+            else:
+                return Response(data={"Error 403, manager has more than 3 tickets pending!"}, status=status.HTTP_403_FORBIDDEN)
         else:
             return Response(data={"Error 403, only admin can reasign!"}, status=status.HTTP_403_FORBIDDEN)
         
