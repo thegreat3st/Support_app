@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from src.tickets.constants import TicketStatus
-import pytz
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -19,15 +18,9 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(
         "tickets.Category", 
-        on_delete=models.CASCADE, 
+        on_delete=models.RESTRICT, 
         null=False, 
         default=None)
-    # taken_at = models.ForeignKey(
-    #     "tickets.Taken_at", 
-    #     on_delete=models.CASCADE, 
-    #     null=True,
-    #     default=False
-    # )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.RESTRICT,

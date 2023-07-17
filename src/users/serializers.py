@@ -23,7 +23,7 @@ class UserPublicSerializer(serializers.ModelSerializer):
     days_since_joined = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name"]
+        fields = ["id", "email", "first_name", "last_name", "days_since_joined"]
         
         def get_days_since_joined(self, obj):
             return (now() - obj.date_joined).days

@@ -26,6 +26,7 @@ class TicketAssignSerializer(serializers.Serializer):
 
         return ticket
 
+
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category

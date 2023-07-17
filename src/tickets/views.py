@@ -7,6 +7,9 @@ from src.tickets.models import Ticket, Category
 from src.tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsUser
 from src.tickets.serializers import (CategorySerializer, TicketAssignSerializer,
                                  TicketSerializer)
+from django.db.models import Q
+from src.users.user_constants import Role
+from src.users.serializers import UserPublicSerializer
 
 User = get_user_model()
 
@@ -16,6 +19,19 @@ class TicketAPIViewSet(ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        all_tickets = Ticket.objects.all()
+
+        if user.role == Role.ADMIN:
+            return all_tickets
+        elif user.role == Role.MANAGER:
+            return all_tickets.filter(Q(manager=user) | Q(manager=None))
+        else:
+            # User's role fallback solution
+            return all_tickets.filter(user=user)
+
+    
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
@@ -32,27 +48,17 @@ class TicketAPIViewSet(ModelViewSet):
             permission_classes = [RoleIsAdmin | RoleIsManager]
         elif self.action == "take":
             permission_classes = [RoleIsManager]
+        elif self.action == "reasign":
+            permission_classes = [RoleIsAdmin]
         else:
             permission_classes = []
 
         return [permission() for permission in permission_classes]
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["PUT"])
     def take(self, request, pk):
         ticket = self.get_object()
-        # if (ticket == 0):
 
-        # *****************************************************
-        # Custom services approach
-        # *****************************************************
-        # updated_ticket: Ticket = AssignService(ticket).assign_manager(
-        #     request.user,
-        # )
-        # serializer = self.get_serializer(ticket)
-
-        # *****************************************************
-        # Serializers approach
-        # *****************************************************
         serializer = TicketAssignSerializer(data={"manager_id": request.user.id})
         serializer.is_valid()
         if (ticket.manager is None):
@@ -61,16 +67,18 @@ class TicketAPIViewSet(ModelViewSet):
         else:
             return Response(data={"Error 404, ticket is already taken"}, status=status.HTTP_404_NOT_FOUND)
         
-
-    @action(detail=True, methods=["post"])
-    def reassign(self, request, pk):
+    @action(detail=True, methods=["PUT"])
+    def reasign(self, request, pk): 
         ticket = self.get_object()
-        serializer = TicketAssignSerializer(data={"manager_id": request.user.id})
+        
+        serializer = TicketAssignSerializer(data=request.data)
         serializer.is_valid()
-        ticket = serializer.assign(ticket)
-
-        return Response(TicketSerializer(ticket).data)
-
+        if (request.user.is_superuser is True):
+            ticket = serializer.assign(ticket)
+            return Response(TicketSerializer(ticket).data)
+        else:
+            return Response(data={"Error 403, only admin can reasign!"}, status=status.HTTP_403_FORBIDDEN)
+        
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
