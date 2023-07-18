@@ -7,6 +7,5 @@ router.register('', TicketAPIViewSet, basename="tickets")
 router.register('', CategoryViewSet, basename="category")
 
 urlpatterns = router.urls + [
-    path(r'', include(router.urls)),
     path(r'', include('rest_framework.urls', namespace='rest_framework'))
 ]
