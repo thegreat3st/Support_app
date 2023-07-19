@@ -1,13 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound, status
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from src.tickets.models import Ticket, Category
+from src.tickets.models import Ticket, Category, Message
 from src.tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsUser
 from src.tickets.serializers import (CategorySerializer, TicketAssignSerializer,
-                                     TicketSerializer)
+                                        TicketSerializer, MessageSerializer)
 from src.users.user_constants import Role
 
 User = get_user_model()
@@ -65,7 +67,7 @@ class TicketAPIViewSet(ModelViewSet):
             if ticket.manager_id is not None:
                 return Response(TicketSerializer(ticket).data)
             else:
-                return Response(data={"Error 403, manager has more than 3 tickets pending!"}, status=status.HTTP_403_FORBIDDEN)
+                return Response(data={"Error 403, manager has more than 2 tickets pending!"}, status=status.HTTP_403_FORBIDDEN)
         else:
             return Response(data={"Error 404, ticket is already taken"}, status=status.HTTP_404_NOT_FOUND)
         
@@ -88,3 +90,43 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     
+class MessageListCreateAPIView(ListCreateAPIView):
+    serializer_class = MessageSerializer
+    lookup_field = "ticket_id"
+
+    def get_queryset(self):
+        # ticket = get_object_or_404(
+        #     Ticket.objects.all(), id=self.kwargs[self.lookup_field]
+        # )
+        # if ticket.user != self.request.user and ticket.manager != self.request.user:
+        #     raise Http404
+
+        return Message.objects.filter(
+            Q(ticket__user=self.request.user) | Q(ticket__manager=self.request.user),
+            ticket_id=self.kwargs[self.lookup_field],
+        )
+
+    @staticmethod
+    def get_ticket(user: User, ticket_id: int) -> Ticket:
+        """Get tickets for current user."""
+
+        tickets = Ticket.objects.filter(Q(user=user) | Q(manager=user))
+        return get_object_or_404(tickets, id=ticket_id)
+
+    def post(self, request, ticket_id: int):
+        ticket = self.get_ticket(request.user, ticket_id)
+        payload = {
+            "text": request.data["text"],
+            "ticket": ticket.id,
+        }
+        serializer = self.get_serializer(data=payload)
+        serializer.is_valid(raise_exception=True)
+        
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+            # else:
+            #     return Response(data={"Error 403, dont spam!"}, status=status.HTTP_403_FORBIDDEN)
