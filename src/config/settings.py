@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from django.contrib import auth
 from datetime import timedelta
-
+from os import getenv 
+from distutils.util import strtobool
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -154,8 +155,12 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        seconds=int(getenv("JWT_ACCESS_TOKEN_LIFETIME", default=100))
+    ),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),   
     'ROTATE_REFRESH_TOKENS': True,
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+CELERY_BROKER_URL = getenv("CELERY_BROKER_URL", default="redis://broker:6379/0")

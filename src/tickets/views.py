@@ -11,8 +11,16 @@ from src.tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsU
 from src.tickets.serializers import (CategorySerializer, TicketAssignSerializer,
                                         TicketSerializer, MessageSerializer)
 from src.users.user_constants import Role
+from src.config.celery import celery_app
 
 User = get_user_model()
+
+    
+@celery_app.task
+def send_email():
+    print("📭 Sending email")
+    sleep(10)
+    print("✅ Email sent")
 
     
 class TicketAPIViewSet(ModelViewSet):
