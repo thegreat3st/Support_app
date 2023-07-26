@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  broker:
+    image: redis
+    container_name: hillel_support_broker
+    ports:
+      - 6379:6379
+
+  application: &app
+    # stdin_open: true
+    # tty: true
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: hillel_support_application
+    container_name: hillel_support_web
+    depends_on:
+      - broker
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/app/
+
+  worker:
+    <<: *app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: hillel_support_worker
+    ports: []
+    command: bash -c "celery -A src.config.celery worker -l INFO" #cd src/ &&
+    depends_on:
+      - broker
