@@ -6,13 +6,22 @@ from rest_framework.exceptions import NotFound, status
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from src.config.celery import celery_app
 from src.tickets.models import Ticket, Category, Message
 from src.tickets.permissions import IsOwner, RoleIsAdmin, RoleIsManager, RoleIsUser
 from src.tickets.serializers import (CategorySerializer, TicketAssignSerializer,
-                                        TicketSerializer, MessageSerializer)
+                                     TicketSerializer, MessageSerializer)
 from src.users.user_constants import Role
+from time import sleep
 
 User = get_user_model()
+
+    
+@celery_app.task
+def send_email():
+    print("📭 Sending email")
+    sleep(10)
+    print("✅ Email sent")
 
     
 class TicketAPIViewSet(ModelViewSet):
